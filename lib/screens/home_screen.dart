@@ -41,13 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    final date = DateFormat('dd/MM/yyyy').format(dateTime);
-    final hour = dateTime.hour.toString().padLeft(2, '0');
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    final period = dateTime.hour < 12 ? 'AM' : 'PM';
-    final formattedHour = dateTime.hour <= 12 ? hour : (dateTime.hour - 12).toString().padLeft(2, '0');
-    return '$date $formattedHour:$minute $period';
-  }
+  final date = DateFormat('dd/MM/yyyy').format(dateTime);
+  final hour = dateTime.hour.toString().padLeft(2, '0');
+  final minute = dateTime.minute.toString().padLeft(2, '0');
+  return '$date $hour:$minute';
+}
 
   @override
   void initState() {
