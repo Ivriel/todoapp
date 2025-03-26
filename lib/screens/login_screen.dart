@@ -19,7 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       if (isLogin) {
         // Handle Login
-        final response = await supaService.signIn(emailController.text, passwordController.text);
+        final response = await supaService.signIn(
+            emailController.text, passwordController.text);
         if (response.user != null) {
           if (mounted) {
             Navigator.pushReplacement(
@@ -30,7 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } else {
         // Handle Sign Up
-        final response = await supaService.signUp(emailController.text, passwordController.text);
+        final response = await supaService.signUp(
+            emailController.text, passwordController.text);
         if (response.user != null) {
           if (mounted) {
             // Show success message
@@ -40,11 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-            
+
             // Clear the text fields
             emailController.clear();
             passwordController.clear();
-            
+
             // Switch back to login mode
             setState(() {
               isLogin = true;
@@ -106,19 +108,40 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  isLogin = !isLogin;
-                  message = '';
-                  emailController.clear();
-                  passwordController.clear();
-                });
-              },
-              child: Text(
-                isLogin ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login',
-              ),
-            ),
+            isLogin
+                ? ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isLogin = !isLogin;
+                        message = '';
+                        emailController.clear();
+                        passwordController.clear();
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      foregroundColor: Colors.black87,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  )
+                : TextButton(
+                    onPressed: () {
+                      setState(() {
+                        isLogin = !isLogin;
+                        message = '';
+                        emailController.clear();
+                        passwordController.clear();
+                      });
+                    },
+                    child: const Text(
+                      'Already have an account? Login',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
             if (message.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
