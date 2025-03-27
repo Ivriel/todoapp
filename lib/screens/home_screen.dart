@@ -4,6 +4,7 @@ import '../services/supabase_service.dart';
 import 'login_screen.dart';
 import 'add_task_screen.dart';
 import '../models/task_model.dart';
+import '../services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,9 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await supaService.signOut();
     if (!mounted) return; // Add this check
     Navigator.pushReplacement(
-      context, 
-      MaterialPageRoute(builder: (context) => const LoginScreen())
-    );
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -41,11 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-  final date = DateFormat('dd/MM/yyyy').format(dateTime);
-  final hour = dateTime.hour.toString().padLeft(2, '0');
-  final minute = dateTime.minute.toString().padLeft(2, '0');
-  return '$date $hour:$minute';
-}
+    final date = DateFormat('dd/MM/yyyy').format(dateTime);
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$date $hour:$minute';
+  }
 
   @override
   void initState() {
@@ -75,12 +74,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   final task = tasks[index];
                   return Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: ListTile(
                       title: Text(
                         task.title,
                         style: TextStyle(
-                          decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -115,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddTaskScreen(task: task),
+                                  builder: (context) =>
+                                      AddTaskScreen(task: task),
                                 ),
                               ).then((_) => fetchTasks());
                             },
@@ -128,14 +131,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   title: const Text('Delete Task'),
-                                  content: const Text('Are you sure you want to delete this task?'),
+                                  content: const Text(
+                                      'Are you sure you want to delete this task?'),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context, false),
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
                                       child: const Text('Cancel'),
                                     ),
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context, true),
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
                                       child: const Text(
                                         'Delete',
                                         style: TextStyle(color: Colors.red),
@@ -144,17 +150,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               );
-                              
+
                               if (confirm == true) {
-                                await supaService.deleteTask(task.id);
-                                fetchTasks();
+                                try {
+                                  // First cancel all notifications for this task
+                                  await NotificationService()
+                                      .cancelTaskNotifications(task.id);
+                                  // Then delete the task
+                                  await supaService.deleteTask(task.id);
+                                  fetchTasks();
+                                } catch (e) {
+                                  if (!mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text('Error deleting task: $e')),
+                                  );
+                                }
                               }
                             },
                           ),
                         ],
                       ),
                       onTap: () async {
-                        await supaService.updateTaskStatus(task.id, !task.isCompleted);
+                        await supaService.updateTaskStatus(
+                            task.id, !task.isCompleted);
                         fetchTasks();
                       },
                     ),

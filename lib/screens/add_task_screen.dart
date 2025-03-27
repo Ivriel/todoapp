@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
-import '../services/notification_service.dart'; // Add this import
+import '../services/notification_service.dart';
 import '../models/task_model.dart';
 import 'package:intl/intl.dart';
 
@@ -64,7 +64,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   void _saveTask() async {
-    if (_titleController.text.isEmpty) return;
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a title')),
+      );
+      return;
+    }
 
     final deadline = DateTime(
       _selectedDate.year,
@@ -74,20 +79,34 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       _selectedTime.minute,
     );
 
+    if (deadline.isBefore(DateTime.now())) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Deadline must be in the future')),
+      );
+      return;
+    }
+
     try {
       if (widget.task == null) {
-        await _supaService.addTask(
+        // Create new task and get its ID
+        final taskId = await _supaService.addTask(
           _titleController.text,
           _descriptionController.text,
           deadline,
         );
-         // Schedule notification for new task
+
+        // Schedule notifications using the actual task ID
         await NotificationService().scheduleNotification(
-          DateTime.now().microsecondsSinceEpoch, // Unique ID
+          taskId,
           _titleController.text,
           deadline,
         );
       } else {
+        // Cancel existing notifications before updating
+        await NotificationService().cancelNotification(widget.task!.id);
+        
+        // Update existing task
         await _supaService.updateTask(
           widget.task!.id,
           _titleController.text,
@@ -95,20 +114,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           deadline,
           widget.task!.isCompleted,
         );
-        // Reschedule notification for updated task
+
+        // Schedule new notifications
         await NotificationService().scheduleNotification(
           widget.task!.id,
           _titleController.text,
           deadline,
         );
       }
-     if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Task saved successfully')),
-        );
-        Navigator.pop(context);
-      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task saved successfully')),
+      );
+      Navigator.pop(context);
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );

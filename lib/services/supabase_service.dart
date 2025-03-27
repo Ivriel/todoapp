@@ -37,17 +37,23 @@ class SupabaseService {
     }
   }
 
-  // Add Task
-  Future<void> addTask(String title, String description, DateTime deadline) async {
+  // Add Task - Now returns the task ID
+  Future<int> addTask(String title, String description, DateTime deadline) async {
     try {
       final userId = supabase.auth.currentUser!.id;
-      await supabase.from('tasks').insert({
-        'user_id': userId,
-        'title': title,
-        'description': description,
-        'deadline': deadline.toIso8601String(),
-        'is_completed': false,
-      });
+      final response = await supabase
+          .from('tasks')
+          .insert({
+            'user_id': userId,
+            'title': title,
+            'description': description,
+            'deadline': deadline.toIso8601String(),
+            'is_completed': false,
+          })
+          .select()
+          .single();
+      
+      return response['id'] as int;
     } catch (e) {
       print('Error adding task: $e');
       throw e;

@@ -9,6 +9,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isHidden = true;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final SupabaseService supaService = SupabaseService();
@@ -79,69 +80,133 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              'Email Address',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold
+              )
+            ,
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+              decoration:  InputDecoration(
+                labelText: 'Enter your email address',
+                labelStyle: const TextStyle(
+                  color: Colors.grey,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Colors.black
+                    )
+                ),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
+            Text(
+              'Password',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold
+              )
+            ,
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              obscureText: isHidden,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                 onPressed: () {
+              setState(() {
+                isHidden = !isHidden;  // Simply toggle the boolean
+              });
+            },
+                 icon: Icon(
+                   isHidden ? Icons.visibility_off : Icons.remove_red_eye,
+                )
+                ),
+                labelText: 'Enter your password',
+                 labelStyle: const TextStyle(
+                  color: Colors.grey,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12)
+                ),
               ),
-              obscureText: true,
+
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: authenticate,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Color(0xFFA252ED),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)
+                )
               ),
               child: Text(
                 isLogin ? 'Login' : 'Sign Up',
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600
+                  ),
               ),
             ),
             const SizedBox(height: 16),
             isLogin
-                ? ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isLogin = !isLogin;
-                        message = '';
-                        emailController.clear();
-                        passwordController.clear();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[200],
-                      foregroundColor: Colors.black87,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  )
-                : TextButton(
-                    onPressed: () {
-                      setState(() {
-                        isLogin = !isLogin;
-                        message = '';
-                        emailController.clear();
-                        passwordController.clear();
-                      });
-                    },
-                    child: const Text(
-                      'Already have an account? Login',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+                ? Column(
+                  children: [
+                    const Text(
+                      "Don't have an account?",
+                      style: TextStyle(fontSize: 15),
+                      ),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                            message = '';
+                            emailController.clear();
+                            passwordController.clear();
+                          });
+                        },
+                        child: const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.blue
+                            ),
+                        ),
+                      ),
+                  ],
+                )
+                : Column(
+                  children: [
+                    Text("Already have an account? "),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                            message = '';
+                            emailController.clear();
+                            passwordController.clear();
+                          });
+                        },
+                        child: const Text(
+                          'Login',
+                            style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.blue
+                            ),
+                        ),
+                      ),
+                  ],
+                ),
             if (message.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
