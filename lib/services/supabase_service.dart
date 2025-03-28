@@ -6,7 +6,13 @@ final supabase = Supabase.instance.client;
 class SupabaseService {
   // Authentication: Login
   Future<AuthResponse> signIn(String email, String password) async {
-    return await supabase.auth.signInWithPassword(email: email, password: password);
+    return await supabase.auth
+        .signInWithPassword(email: email, password: password);
+  }
+
+// get current username
+  User? getCurrentUser() {
+    return supabase.auth.currentUser;
   }
 
   // Authentication: Sign Up
@@ -38,7 +44,8 @@ class SupabaseService {
   }
 
   // Add Task - Now returns the task ID
-  Future<int> addTask(String title, String description, DateTime deadline) async {
+  Future<int> addTask(
+      String title, String description, DateTime deadline) async {
     try {
       final userId = supabase.auth.currentUser!.id;
       final response = await supabase
@@ -52,7 +59,7 @@ class SupabaseService {
           })
           .select()
           .single();
-      
+
       return response['id'] as int;
     } catch (e) {
       print('Error adding task: $e');
@@ -65,8 +72,7 @@ class SupabaseService {
     try {
       await supabase
           .from('tasks')
-          .update({'is_completed': isCompleted})
-          .eq('id', taskId);
+          .update({'is_completed': isCompleted}).eq('id', taskId);
     } catch (e) {
       print('Error updating task status: $e');
       throw e;
@@ -74,7 +80,8 @@ class SupabaseService {
   }
 
   // Update Task
-  Future<void> updateTask(int taskId, String title, String description, DateTime deadline, bool isCompleted) async {
+  Future<void> updateTask(int taskId, String title, String description,
+      DateTime deadline, bool isCompleted) async {
     try {
       await supabase.from('tasks').update({
         'title': title,

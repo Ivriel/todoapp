@@ -197,23 +197,24 @@ class NotificationService {
 
 // Add this method after cancelNotification
   Future<void> cancelTaskNotifications(int taskId) async {
-  try {
-    final baseId = taskId * 1000; // Use same ID generation as scheduling
-    print('Cancelling all notifications for task ID: $taskId (Base ID: $baseId)');
-    
-    // Cancel notifications for all time intervals (15, 10, 5 minutes)
-    for (var i = 0; i < 3; i++) {
-      await flutterLocalNotificationsPlugin.cancel(baseId + i);
+    try {
+      final baseId = taskId * 1000; // Use same ID generation as scheduling
+      print(
+          'Cancelling all notifications for task ID: $taskId (Base ID: $baseId)');
+
+      // Cancel notifications for all time intervals (15, 10, 5 minutes)
+      for (var i = 0; i < 3; i++) {
+        await flutterLocalNotificationsPlugin.cancel(baseId + i);
+      }
+
+      // Verify cancellation
+      final pending = await checkPendingNotifications();
+      print('Remaining notifications after cancellation: ${pending.length}');
+    } catch (e) {
+      print('Error cancelling task notifications: ${e.toString()}');
+      rethrow;
     }
-    
-    // Verify cancellation
-    final pending = await checkPendingNotifications();
-    print('Remaining notifications after cancellation: ${pending.length}');
-  } catch (e) {
-    print('Error cancelling task notifications: ${e.toString()}');
-    rethrow;
   }
-}
 
   Future<void> cancelAllNotifications() async {
     try {

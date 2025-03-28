@@ -66,7 +66,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void _saveTask() async {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Please enter a title',style: TextStyle(color: Colors.white),)
+          ),
       );
       return;
     }
@@ -82,7 +85,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     if (deadline.isBefore(DateTime.now())) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Deadline must be in the future')),
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Deadline must be in the future',style: TextStyle(color: Colors.white),)
+          ),
       );
       return;
     }
@@ -105,7 +111,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       } else {
         // Cancel existing notifications before updating
         await NotificationService().cancelNotification(widget.task!.id);
-        
+
         // Update existing task
         await _supaService.updateTask(
           widget.task!.id,
@@ -125,7 +131,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task saved successfully')),
+        const SnackBar(
+          content: Text('Task saved successfully',style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.green,
+          ),
       );
       Navigator.pop(context);
     } catch (e) {
@@ -140,6 +149,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(widget.task == null ? 'Add Task' : 'Edit Task'),
       ),
       body: SingleChildScrollView(
@@ -150,17 +163,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             children: [
               TextField(
                 controller: _titleController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Title',
-                  border: OutlineInputBorder(),
+                  labelStyle: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.black)),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(),
+                  labelStyle: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.black)),
                 ),
                 maxLines: 3,
               ),
@@ -169,7 +192,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text('Date: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}'),
+                      title: Text(
+                          'Date: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}'),
                       trailing: const Icon(Icons.calendar_today),
                       onTap: _selectDate,
                     ),
@@ -186,11 +210,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ElevatedButton(
                 onPressed: _saveTask,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Color(0xFFA252ED),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
                 child: Text(
                   widget.task == null ? 'Add Task' : 'Update Task',
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16,color: Colors.white,fontWeight: FontWeight.w900),
                 ),
               ),
             ],
