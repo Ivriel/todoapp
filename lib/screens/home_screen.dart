@@ -175,9 +175,8 @@ String _formatEmail() {
                   DateFormat('HH:mm:ss').format(_currentTime),
                   style: TextStyle(color: Colors.white),
                 ),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                SizedBox(height: 20),
+                Column(
                   children: [
                     Row(children: [
                       Icon(Icons.assignment, color: Colors.yellow),
@@ -185,6 +184,7 @@ String _formatEmail() {
                       Text("Tasks: ${tasks.length}",
                           style: TextStyle(color: Colors.yellow, fontSize: 14)),
                     ]),
+                    SizedBox(height: 5),
                     Row(children: [
                       Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 3),
@@ -193,6 +193,7 @@ String _formatEmail() {
                         style: TextStyle(color: Colors.green, fontSize: 14),
                       ),
                     ]),
+                     SizedBox(height: 5),
                     Row(
                       children: [
                         Icon(
