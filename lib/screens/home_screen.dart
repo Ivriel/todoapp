@@ -44,10 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-String _formatEmail() {
-  final email = supaService.getCurrentUser()?.email ?? '';
-  return 'Welcome Back, ${email.split('@')[0]}';
-}
+  String _formatEmail() {
+    final email = supaService.getCurrentUser()?.email ?? '';
+    return 'Welcome Back, ${email.split('@')[0]}';
+  }
 
   String _formatDateTime(DateTime dateTime) {
     final date = DateFormat('dd/MM/yyyy').format(dateTime);
@@ -136,10 +136,9 @@ String _formatEmail() {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(height: 20),
-           Padding(
+          Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text(
-              _formatEmail(),
+            child: Text(_formatEmail(),
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -193,7 +192,7 @@ String _formatEmail() {
                         style: TextStyle(color: Colors.green, fontSize: 14),
                       ),
                     ]),
-                     SizedBox(height: 5),
+                    SizedBox(height: 5),
                     Row(
                       children: [
                         Icon(
@@ -220,8 +219,8 @@ String _formatEmail() {
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
-            ),
-          SizedBox(height:16),
+          ),
+          SizedBox(height: 16),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
@@ -229,7 +228,7 @@ String _formatEmail() {
               },
               child: tasks.isEmpty
                   ? const Center(
-                      child: Text('No tasks yet. Tap + to add one!'),
+                      child: Text('No tasks yet. Tap + to add tasks!'),
                     )
                   : ListView.builder(
                       itemCount: tasks.length,
@@ -343,9 +342,35 @@ String _formatEmail() {
                               ],
                             ),
                             onTap: () async {
-                              await supaService.updateTaskStatus(
-                                  task.id, !task.isCompleted);
-                              fetchTasks();
+                              try {
+                                final newStatus = !task.isCompleted;
+                                print(
+                                    'Toggling task ${task.id} completion status to: $newStatus');
+
+                                // Update task status
+                                await supaService.updateTaskStatus(
+                                    task.id, newStatus);
+
+                                // Refresh task list to show new status
+                                fetchTasks();
+
+                                // Show feedback to user
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(newStatus
+                                        ? 'Task marked as complete'
+                                        : 'Task marked as incomplete'),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              } catch (e) {
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Error updating task: $e')),
+                                );
+                              }
                             },
                           ),
                         );

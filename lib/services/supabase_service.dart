@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/task_model.dart';
+import 'notification_service.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -68,16 +69,49 @@ class SupabaseService {
   }
 
   // Update Task Status
-  Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
-    try {
-      await supabase
-          .from('tasks')
-          .update({'is_completed': isCompleted}).eq('id', taskId);
-    } catch (e) {
-      print('Error updating task status: $e');
-      throw e;
+Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
+  try {
+    // First get the current task data before updating
+    final response = await supabase
+        .from('tasks')
+        .select()
+        .eq('id', taskId)
+        .single();
+    
+    final task = Task.fromMap(response);
+
+    // Update the status in database
+    await supabase
+        .from('tasks')
+        .update({'is_completed': isCompleted})
+        .eq('id', taskId);
+
+    print('Task ${task.title} (ID: $taskId) status updated to: ${isCompleted ? 'completed' : 'incomplete'}');
+
+    // Handle notifications
+    if (isCompleted) {
+      // Cancel notifications when task is marked complete
+      print('Cancelling notifications for completed task');
+      await NotificationService().cancelTaskNotifications(taskId);
+    } else {
+      // Task is being marked as incomplete
+      if (task.deadline.isAfter(DateTime.now())) {
+        print('Rescheduling notifications for uncompleted task');
+        // Force reschedule notifications with fresh schedule
+        await NotificationService().scheduleNotification(
+          taskId,
+          task.title,
+          task.deadline,
+        );
+      } else {
+        print('Task deadline has passed, not scheduling notifications');
+      }
     }
+  } catch (e) {
+    print('Error in updateTaskStatus: $e');
+    throw e;
   }
+}
 
   // Update Task
   Future<void> updateTask(int taskId, String title, String description,

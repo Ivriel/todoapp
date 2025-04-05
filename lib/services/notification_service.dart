@@ -98,89 +98,108 @@ class NotificationService {
     return areNotificationsEnabled ?? false;
   }
 
-  Future<void> scheduleNotification(
-      int id, String title, DateTime deadline) async {
-    try {
-      // Check permissions first
-      if (!await checkNotificationPermissions()) {
-        print('Warning: Notifications are not enabled!');
-        return;
-      }
-
-      // Generate unique base ID for this task's notifications
-      final baseId = id * 1000; // Ensures no ID conflicts
-      print(
-          '\n------- Scheduling notifications for task: $title (Base ID: $baseId) -------');
-
-      // Cancel any existing notifications for this task
-      await cancelNotification(baseId);
-
-      final notificationTimes = [
-        const Duration(minutes: 15),
-        const Duration(minutes: 10),
-        const Duration(minutes: 5),
-      ];
-
-      int scheduledCount = 0;
-      for (var i = 0; i < notificationTimes.length; i++) {
-        final scheduledTime = tz.TZDateTime.from(deadline, tz.local)
-            .subtract(notificationTimes[i]);
-
-        if (scheduledTime.isBefore(tz.TZDateTime.now(tz.local))) {
-          print(
-              'Skipping notification at ${notificationTimes[i].inMinutes} minutes: Already passed');
-          continue;
-        }
-
-        final notificationId = baseId + i;
-
-        final androidDetails = AndroidNotificationDetails(
-          'task_deadline',
-          'Task Deadlines',
-          channelDescription: 'Notifications for task deadlines',
-          importance: Importance.max,
-          priority: Priority.high,
-          enableVibration: true,
-          fullScreenIntent: true,
-          category: AndroidNotificationCategory.alarm,
-          visibility: NotificationVisibility.public,
-          playSound: true,
-          ongoing: true,
-          autoCancel: false,
-          channelShowBadge: true,
-          additionalFlags: Int32List.fromList(<int>[4]), // Insistent flag
-        );
-
-        await flutterLocalNotificationsPlugin.zonedSchedule(
-          notificationId,
-          'Task Deadline Alert',
-          'Task "$title" is due in ${notificationTimes[i].inMinutes} minutes',
-          scheduledTime,
-          NotificationDetails(android: androidDetails),
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-          payload: '$title:$notificationId',
-        );
-
-        scheduledCount++;
-        print(
-            'Scheduled notification ID: $notificationId for ${notificationTimes[i].inMinutes} minutes before deadline');
-      }
-
-      print('Successfully scheduled $scheduledCount notifications');
-      print('Current time: ${tz.TZDateTime.now(tz.local)}');
-      print('Device timezone: ${tz.local}');
-      print('Task deadline: $deadline');
-      print('----------------------------------------------------------\n');
-    } catch (e) {
-      print('Error scheduling notification for task $title (ID: $id)');
-      print('Error details: ${e.toString()}');
-      print('Stack trace: ${StackTrace.current}');
-      rethrow; // Rethrow to handle in UI
+ Future<void> scheduleNotification(int id, String title, DateTime deadline) async {
+  try {
+    // Force timezone initialization
+    tz.initializeTimeZones();
+    
+    print('\n------- Starting notification scheduling for task: $title (ID: $id) -------');
+    
+    // Check permissions first
+    if (!await checkNotificationPermissions()) {
+      print('Warning: Notifications are not enabled!');
+      return;
     }
-  }
 
+    // Convert to local timezone for accurate comparisons
+    final localDeadline = tz.TZDateTime.from(deadline, tz.local);
+    final now = tz.TZDateTime.now(tz.local);
+
+    // Verify deadline is in the future
+    if (localDeadline.isBefore(now)) {
+      print('Warning: Task deadline has already passed. Skipping notifications.');
+      return;
+    }
+
+    // Cancel any existing notifications before scheduling new ones
+    await cancelTaskNotifications(id);
+
+    // Generate unique base ID for this task's notifications
+    final baseId = id * 1000;
+    print('Scheduling with base ID: $baseId');
+    print('Current time: $now');
+    print('Task deadline: $localDeadline');
+
+    final notificationTimes = [
+      const Duration(minutes: 15),
+      const Duration(minutes: 10),
+      const Duration(minutes: 5),
+    ];
+
+    int scheduledCount = 0;
+    for (var i = 0; i < notificationTimes.length; i++) {
+      final scheduledTime = localDeadline.subtract(notificationTimes[i]);
+
+      if (scheduledTime.isBefore(now)) {
+        print('Skipping ${notificationTimes[i].inMinutes} minute notification: Already passed');
+        continue;
+      }
+
+      final notificationId = baseId + i;
+
+      final androidDetails = AndroidNotificationDetails(
+        'task_deadline',
+        'Task Deadlines',
+        channelDescription: 'Notifications for task deadlines',
+        importance: Importance.max,
+        priority: Priority.high,
+        enableVibration: true,
+        fullScreenIntent: true,
+        category: AndroidNotificationCategory.alarm,
+        visibility: NotificationVisibility.public,
+        playSound: true,
+        ongoing: true,
+        autoCancel: false,
+        channelShowBadge: true,
+        additionalFlags: Int32List.fromList(<int>[4]), // Insistent flag
+      );
+
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        notificationId,
+        'Task Deadline Alert',
+        'Task "$title" is due in ${notificationTimes[i].inMinutes} minutes',
+        scheduledTime,
+        NotificationDetails(android: androidDetails),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: '$title:$notificationId',
+      );
+
+      scheduledCount++;
+      print('Successfully scheduled notification ID: $notificationId for ${notificationTimes[i].inMinutes} minutes before deadline');
+    }
+
+    // Verify scheduling was successful
+    final pendingNotifications = await checkPendingNotifications();
+    final verifiedCount = pendingNotifications
+        .where((notification) => notification.id >= baseId && notification.id < baseId + 3)
+        .length;
+
+    print('\nScheduling Summary:');
+    print('- Attempted to schedule: ${notificationTimes.length} notifications');
+    print('- Successfully scheduled: $scheduledCount notifications');
+    print('- Verified pending: $verifiedCount notifications');
+    print('- Total pending notifications: ${pendingNotifications.length}');
+    print('----------------------------------------------------------\n');
+
+  } catch (e) {
+    print('Error scheduling notifications for task $title (ID: $id)');
+    print('Error details: ${e.toString()}');
+    print('Stack trace: ${StackTrace.current}');
+    rethrow;
+  }
+}
   Future<void> cancelNotification(int baseId) async {
     try {
       print('Cancelling notifications for base ID: $baseId');
