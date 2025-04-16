@@ -170,7 +170,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.black)),
+                      borderSide: const BorderSide(color: Colors.black)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -183,7 +183,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.black)),
+                      borderSide: const BorderSide(color: Colors.black)),
                 ),
                 maxLines: 3,
               ),
@@ -211,7 +211,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 onPressed: _saveTask,
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Color(0xFFA252ED),
+                    backgroundColor: const Color(0xFFA252ED),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),
                 child: Text(

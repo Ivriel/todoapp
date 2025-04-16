@@ -74,12 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(60),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: AppBar(
             title: const Text(
-              'To-Do List',
+              'To-Do App',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -135,11 +135,11 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(_formatEmail(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
                 )),
@@ -154,9 +154,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Datetime',
-                  style: TextStyle(
+                  style:  TextStyle(
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
                       fontSize: 25),
@@ -164,45 +164,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 4),
                 Text(
                   DateFormat('EEEE, d MMMM y').format(_currentTime),
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w900),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Text(
                   DateFormat('HH:mm:ss').format(_currentTime),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white
+                    ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Column(
                   children: [
                     Row(children: [
-                      Icon(Icons.assignment, color: Colors.yellow),
+                      const Icon(
+                        Icons.assignment,
+                         color: Colors.yellow
+                         ),
                       const SizedBox(width: 3),
                       Text("Tasks: ${tasks.length}",
-                          style: TextStyle(color: Colors.yellow, fontSize: 14)),
+                          style: const TextStyle(
+                            color: Colors.yellow,
+                             fontSize: 14)
+                             ),
                     ]),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(children: [
-                      Icon(Icons.check_circle, color: Colors.green),
+                      const Icon(
+                        Icons.check_circle,
+                         color: Colors.green
+                         ),
                       const SizedBox(width: 3),
                       Text(
                         'Completed: ${tasks.where((task) => task.isCompleted).length}',
-                        style: TextStyle(color: Colors.green, fontSize: 14),
+                        style: const TextStyle(
+                          color: Colors.green,
+                           fontSize: 14
+                           ),
                       ),
                     ]),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.assignment_late,
                           color: Colors.red,
                         ),
                         const SizedBox(width: 3),
                         Text(
                           'Remaining: ${tasks.where((task) => !task.isCompleted).length}',
-                          style: TextStyle(color: Colors.red, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.red,
+                             fontSize: 14
+                             ),
                         )
                       ],
                     ),
@@ -211,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Text(
+          const Text(
             'My Tasks',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -220,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {

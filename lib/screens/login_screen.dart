@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/supabase_service.dart';
 import 'home_screen.dart';
 
@@ -81,25 +82,26 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.asset('assets/logoscreen.png'),
-                SizedBox(height: 10),
+                Image.asset('assets/logoscreen.png',height: 220,),
+                const SizedBox(height: 4),
                 Text(
                 isLogin?'Login':'Sign Up',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 40
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                  color: const Color.fromARGB(255, 143, 41, 239),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 3),
                 Text(
                 textAlign: TextAlign.center,
                 isLogin?'Login to your account':'Register your account',
-                style: TextStyle(fontSize: 24)
+                style: const TextStyle(fontSize: 24)
                 ,
                 ),
-                SizedBox(height: 40),
-                Text(
+                const SizedBox(height: 40),
+                const Text(
                   'Email Address',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
@@ -113,12 +115,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.black)),
+                        borderSide: const BorderSide(color: Colors.black)),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
-                Text(
+                const Text(
                   'Password',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
@@ -149,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: authenticate,
                   style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Color(0xFFA252ED),
+                      backgroundColor: const Color(0xFFA252ED),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12))),
                   child: Text(
@@ -186,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     : Column(
                         children: [
-                          Text("Already have an account? "),
+                          const Text("Already have an account? "),
                           TextButton(
                             onPressed: () {
                               setState(() {

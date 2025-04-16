@@ -18,6 +18,53 @@ void main() async {
   runApp(const MyApp());
 }
 
+class Splashscreen extends StatelessWidget {
+  const Splashscreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Chek autentikasi dulu setelah splash screen buat login /  ke home
+    Future.delayed(const Duration(seconds: 2), () {
+      final user = Supabase.instance.client.auth.currentUser;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => user != null 
+              ? const HomeScreen() 
+              : const LoginScreen(),
+        ),
+      );
+    });
+
+    return  Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('assets/logoscreen.png',height: 150,),
+            SizedBox(height: 16),
+            Text(
+              "To-Do App",
+              style: GoogleFonts.montserrat(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 143, 41, 239)
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Boost your productivity",style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,24 +75,10 @@ class MyApp extends StatelessWidget {
       title: 'To-Do List',
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
-        primaryColor: Color(0xFFA252ED),
+        primaryColor: const Color(0xFFA252ED),
         useMaterial3: true,
       ),
-      home: StreamBuilder<AuthState>(
-        stream: Supabase.instance.client.auth.onAuthStateChange,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-
-          final session = snapshot.data?.session;
-          return session != null ? const HomeScreen() : const LoginScreen();
-        },
-      ),
+      home: const Splashscreen(),
     );
   }
 }
