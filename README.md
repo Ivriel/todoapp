@@ -1,16 +1,16 @@
-# todoapp
+<h1 align="center">To Do List App</h1>
 
-A new Flutter project.
+<p align="center">PROJEK TUGAS AKHIR SEMESTER 2 KELAS 11 MATA PELAJARAN PPB</p>
 
-## Getting Started
+# Tentang
+Aplikasi TODOLIST APP ini dibuat sebagai pengingat tugas dimana user bisa menambahkan, menghapus, mengubah, dan membaca semua tugas yang ada. 
 
-This project is a starting point for a Flutter application.
+## Fitur
+- Atur deadline: User bisa mengatur tanggal dan jam deadline dari tugas
+- Notifikasi pengingat: User menerima notifikasi dengan jarak waktu 15,10, dan 5 menit sebelum waktu deadline. Diperkuat dengan notifikasi getaran yang terus-menerus.
+- Hari/tanggal/jam: Dilengkapi dengan informasi hari dan tanggal terkini dan disertai dengan jam yang tersusun dengan format jam:menit:detik
+- Informasi tugas (3): User bisa melihat jumlah tugas yang dibuat. Termasuk yang sudah diselesaikan dan yang belum diselesaikan.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Nama Anggota Kelompok
+- Ivriel Dei Gratia Gunawan (XI RPL A / 14)
+- Raffy Reshaina Pasha (XI RPL A / 29)
