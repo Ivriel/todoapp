@@ -1,5 +1,5 @@
 <h1 align="center">To Do List App</h1>
-<h4 align="center">Do Manage</h4>
+<h2 align="center">Do Manage</h2>
 
 <p align="center">PROJEK TUGAS AKHIR SEMESTER 2 KELAS 11 MATA PELAJARAN PPB</p>
 
