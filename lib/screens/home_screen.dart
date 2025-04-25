@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: AppBar(
             title: const Text(
-              'To-Do App',
+              'DoManage',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -102,13 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         actions: [
                           TextButton(
                             onPressed: () =>
-                                Navigator.pop(context, false), // Tutup dialog
+                                Navigator.pop(context, false), // Tutup dialognya
                             child: const Text('Cancel'),
                           ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context,
-                                  true); // Tutup dialog dan lanjut logout
+                                  true); // Tutup dialog terus lanjut logout
                             },
                             child: const Text(
                               'Logout',
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
 
                     if (confirm == true) {
-                      signOut(); // Jika pengguna menekan Logout, panggil signOut()
+                      signOut(); // kalau pengguna  Logout, langsung panggil signOut() wir
                     }
                   },
                   icon: const Icon(

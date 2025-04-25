@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             emailController.text, passwordController.text);
         if (response.user != null) {
           if (mounted) {
-            // Show success message
+            //lek iso login  tampilno iki wir
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Sign up successful! Please login to continue.'),
@@ -45,11 +45,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
 
-            // Clear the text fields
+            // Bersihkan input
             emailController.clear();
             passwordController.clear();
 
-            // Switch back to login mode
+            // ganti mode login lek dipitek
             setState(() {
               isLogin = true;
               message = '';
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            isHidden = !isHidden; // Simply toggle the boolean
+                            isHidden = !isHidden; // SUbah nilai boolean buat hide pw
                           });
                         },
                         icon: Icon(

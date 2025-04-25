@@ -69,7 +69,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         const SnackBar(
           backgroundColor: Colors.red,
           content: Text('Please enter a title',style: TextStyle(color: Colors.white),)
-          ),
+          )
       );
       return;
     }
