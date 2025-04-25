@@ -1,10 +1,10 @@
-<h1 align="center">To Do List App</h1>
-<h2 align="center">Do Manage</h2>
+<h1 align="center">Do Manage</h1>
+
 
 <p align="center">PROJEK TUGAS AKHIR SEMESTER 2 KELAS 11 MATA PELAJARAN PPB</p>
 
 # Tentang
-Aplikasi TODOLIST APP ini dibuat sebagai pengingat tugas dimana user bisa menambahkan, menghapus, mengubah, dan membaca semua tugas yang ada. 
+Aplikasi DoManage ini dibuat sebagai pengingat tugas dimana user bisa menambahkan, menghapus, mengubah, dan membaca semua tugas yang ada. 
 
 ## Fitur
 - Atur deadline: User bisa mengatur tanggal dan jam deadline dari tugas
