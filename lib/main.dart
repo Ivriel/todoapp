@@ -45,7 +45,7 @@ class Splashscreen extends StatelessWidget {
             Image.asset('assets/logoscreen.png',height: 150,),
             SizedBox(height: 16),
             Text(
-              "To-Do App",
+              "DoManage",
               style: GoogleFonts.montserrat(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
