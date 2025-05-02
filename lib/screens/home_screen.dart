@@ -21,18 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _currentTime = DateTime.now();
 
   void fetchTasks() async {
-    if (!mounted) return; // Add this check
+    if (!mounted) return; 
     final data = await supaService.getTasks();
-    if (!mounted) return; // Add this check
+    if (!mounted) return; 
     setState(() {
       tasks = data;
     });
   }
 
   void signOut() async {
-    if (!mounted) return; // Add this check
+    if (!mounted) return; 
     await supaService.signOut();
-    if (!mounted) return; // Add this check
+    if (!mounted) return;
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _formatEmail() {
     final email = supaService.getCurrentUser()?.email ?? '';
-    return 'Welcome Back, ${email.split('@')[0]}';
+    return 'Welcome Back, ${email.split('@')[0]}';  
   }
 
   String _formatDateTime(DateTime dateTime) {
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchTasks();
-    // Update time every second
+    // Buat update real time setiap detiknya 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {

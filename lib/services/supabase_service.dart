@@ -11,22 +11,22 @@ class SupabaseService {
         .signInWithPassword(email: email, password: password);
   }
 
-// get current username
+// nama user saat ini berdasarkan email
   User? getCurrentUser() {
     return supabase.auth.currentUser;
   }
 
-  // Authentication: Sign Up
+  // gawe sign up
   Future<AuthResponse> signUp(String email, String password) async {
     return await supabase.auth.signUp(email: email, password: password);
   }
 
-  // Logout
+  // fungsi buat log out 
   Future<void> signOut() async {
     await supabase.auth.signOut();
   }
 
-  // Get Tasks (for logged in user)
+  // Buat tampilkan list tugas buat user yang baru login 
   Future<List<Task>> getTasks() async {
     try {
       final userId = supabase.auth.currentUser!.id;

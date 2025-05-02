@@ -13,13 +13,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final SupabaseService supaService = SupabaseService();
-  bool isLogin = true;
-  bool isHidden = true;
+  bool isLogin = true; // setting nilai boolean buat login atau sign up
+  bool isHidden = true; // setting nilai awal buat hide password
   String message = '';
 
   void authenticate() async {
     try {
-      if (isLogin) {
+      if (isLogin) { // kalau true
         // Handle Login
         final response = await supaService.signIn(
             emailController.text, passwordController.text);
@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         }
-      } else {
+      } else { // kalau false, berarti alihkan ke sign up
         // Handle Sign Up
         final response = await supaService.signUp(
             emailController.text, passwordController.text);

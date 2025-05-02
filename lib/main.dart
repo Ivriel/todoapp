@@ -7,7 +7,7 @@ import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  // inisialisasi supabase ndek project pakai url project sama api key (anon key)
   await Supabase.initialize(
     url: 'https://etkscfmhjlnoiojezvbx.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0a3NjZm1oamxub2lvamV6dmJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4MjkzNTYsImV4cCI6MjA1ODQwNTM1Nn0.g8kC6n9UNKQQ9CmRQDzQnFHErOr8XeQzV1U5It30Yoo',
@@ -43,17 +43,17 @@ class Splashscreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset('assets/logoscreen.png',height: 150,),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               "DoManage",
               style: GoogleFonts.montserrat(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 143, 41, 239)
+                color: const  Color.fromARGB(255, 143, 41, 239)
               ),
             ),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               "Boost your productivity",style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'To-Do List',
+      title: 'DoManage',
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
         primaryColor: const Color(0xFFA252ED),
