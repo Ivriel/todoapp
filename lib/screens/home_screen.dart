@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
-                        childAspectRatio: 0.68,
+                        childAspectRatio: 0.7,
                       ),
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
@@ -388,6 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: Colors.grey[700],
                                         height: 1.4,
                                       ),
+                                      textAlign: TextAlign.center,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                     ),
