@@ -21,16 +21,16 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _currentTime = DateTime.now();
 
   void fetchTasks() async {
-    if (!mounted) return; 
+    if (!mounted) return;
     final data = await supaService.getTasks();
-    if (!mounted) return; 
+    if (!mounted) return;
     setState(() {
       tasks = data;
     });
   }
 
   void signOut() async {
-    if (!mounted) return; 
+    if (!mounted) return;
     await supaService.signOut();
     if (!mounted) return;
     Navigator.pushReplacement(
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _formatEmail() {
     final email = supaService.getCurrentUser()?.email ?? '';
-    return 'Welcome Back, ${email.split('@')[0]}';  
+    return 'Welcome Back, ${email.split('@')[0]}';
   }
 
   String _formatDateTime(DateTime dateTime) {
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchTasks();
-    // Buat update real time setiap detiknya 
+    // Buat update real time setiap detiknya
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
@@ -101,8 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         content: const Text('Are you sure to logout?'),
                         actions: [
                           TextButton(
-                            onPressed: () =>
-                                Navigator.pop(context, false), // Tutup dialognya
+                            onPressed: () => Navigator.pop(
+                                context, false), // Tutup dialognya
                             child: const Text('Cancel'),
                           ),
                           TextButton(
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Text(
                   'Datetime',
-                  style:  TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
                       fontSize: 25),
@@ -172,38 +172,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 6),
                 Text(
                   DateFormat('HH:mm:ss').format(_currentTime),
-                  style: const TextStyle(
-                    color: Colors.white
-                    ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 20),
                 Column(
                   children: [
                     Row(children: [
-                      const Icon(
-                        Icons.assignment,
-                         color: Colors.yellow
-                         ),
+                      const Icon(Icons.assignment, color: Colors.yellow),
                       const SizedBox(width: 3),
                       Text("Tasks: ${tasks.length}",
                           style: const TextStyle(
-                            color: Colors.yellow,
-                             fontSize: 14)
-                             ),
+                              color: Colors.yellow, fontSize: 14)),
                     ]),
                     const SizedBox(height: 5),
                     Row(children: [
-                      const Icon(
-                        Icons.check_circle,
-                         color: Colors.green
-                         ),
+                      const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 3),
                       Text(
                         'Completed: ${tasks.where((task) => task.isCompleted).length}',
-                        style: const TextStyle(
-                          color: Colors.green,
-                           fontSize: 14
-                           ),
+                        style:
+                            const TextStyle(color: Colors.green, fontSize: 14),
                       ),
                     ]),
                     const SizedBox(height: 5),
@@ -216,10 +204,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 3),
                         Text(
                           'Remaining: ${tasks.where((task) => !task.isCompleted).length}',
-                          style: const TextStyle(
-                            color: Colors.red,
-                             fontSize: 14
-                             ),
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 14),
                         )
                       ],
                     ),
@@ -245,150 +231,232 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child: tasks.isEmpty
                   ? const Center(
-                      child: Text('No tasks yet. Tap + to add tasks!'),
+                      child: Text('No tasks yet. Tap + to add tasks'),
                     )
-                  : ListView.builder(
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.68,
+                      ),
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
                         final task = tasks[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          child: ListTile(
-                            title: Text(
-                              task.title,
-                              style: TextStyle(
-                                decoration: task.isCompleted
-                                    ? TextDecoration.lineThrough
-                                    : null,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 4),
-                                Text(
-                                  task.description,
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Deadline: ${_formatDateTime(task.deadline)}',
-                                  style: TextStyle(
-                                    color: Colors.grey[800],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                  ),
+
+                        // pilih warna container
+                        final bgColor = task.isCompleted
+                            ? Colors.grey.shade300 // lebih gelap saat selesai
+                            : Colors.white; // putih saat belum selesai
+
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () async {
+                            await supaService.updateTaskStatus(
+                                task.id, !task.isCompleted);
+                            fetchTasks();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20),
+                            decoration: BoxDecoration(
+                              color: bgColor,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                // Edit Button
-                                IconButton(
-                                  icon: const Icon(Icons.edit,
-                                      color: Color(0xFFA252ED)),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddTaskScreen(task: task),
-                                      ),
-                                    ).then((_) => fetchTasks());
-                                  },
-                                ),
-                                // Delete Button
-                                IconButton(
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.red),
-                                  onPressed: () async {
-                                    final confirm = await showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text(
-                                          'Delete Task',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                // --- Top actions (edit/delete) ---
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    // Edit
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                AddTaskScreen(task: task),
+                                          ),
+                                        ).then((_) => fetchTasks());
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 16,
+                                        backgroundColor:
+                                            const Color(0xFFF0E6FF),
+                                        child: const Icon(
+                                          Icons.edit,
+                                          size: 18,
+                                          color: Color(0xFFA252ED),
                                         ),
-                                        content: const Text(
-                                            'Are you sure you want to delete this task?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, false),
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, true),
-                                            child: const Text(
-                                              'Delete',
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                    );
-
-                                    if (confirm == true) {
-                                      try {
-                                        // First cancel all notifications for this task
-                                        await NotificationService()
-                                            .cancelTaskNotifications(task.id);
-                                        // Then delete the task
-                                        await supaService.deleteTask(task.id);
-                                        fetchTasks();
-                                      } catch (e) {
-                                        if (!mounted) return;
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  'Error deleting task: $e')),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    // Delete
+                                    GestureDetector(
+                                      onTap: () async {
+                                        final confirmed =
+                                            await showDialog<bool>(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            title: const Text('Hapus tugas?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, false),
+                                                child: const Text('Batal'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, true),
+                                                child: const Text('Hapus'),
+                                              ),
+                                            ],
+                                          ),
                                         );
-                                      }
-                                    }
-                                  },
+                                        if (confirmed == true) {
+                                          await supaService.deleteTask(task.id);
+                                          fetchTasks();
+                                        }
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 16,
+                                        backgroundColor:
+                                            const Color(0xFFFFECEC),
+                                        child: const Icon(
+                                          Icons.delete,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                // --- Title ---
+                                Text(
+                                  task.title,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: task.isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                // --- Description ---
+                                if (task.description.isEmpty)
+                                  // Jika kosong, tampilkan “No description” di tengah
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        'No description',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.grey[500],
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  // Jika ada, tampilkan seperti biasa
+                                  Expanded(
+                                    child: Text(
+                                      task.description,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[700],
+                                        height: 1.4,
+                                      ),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+
+                                const Spacer(),
+
+                                // --- LABEL DEADLINE ---
+                                Text(
+                                  'DEADLINE',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: task.isCompleted
+                                        ? Colors.grey[600]
+                                        : Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // --- Tanggal (pill) ---
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        task.deadline.isBefore(DateTime.now())
+                                            ? Colors.red.withOpacity(0.1)
+                                            : Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    DateFormat('EEEE, d MMM yyyy')
+                                        .format(task.deadline),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color:
+                                          task.deadline.isBefore(DateTime.now())
+                                              ? Colors.red
+                                              : Colors.blue,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 6),
+
+                                // --- Jam (pill) ---
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    DateFormat('HH:mm').format(task.deadline),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            onTap: () async {
-                              try {
-                                final newStatus = !task.isCompleted;
-                                print(
-                                    'Toggling task ${task.id} completion status to: $newStatus');
-
-                                // Update task status
-                                await supaService.updateTaskStatus(
-                                    task.id, newStatus);
-
-                                // Refresh task list to show new status
-                                fetchTasks();
-
-                                // Show feedback to user
-                                if (!mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(newStatus
-                                        ? 'Task marked as complete'
-                                        : 'Task marked as incomplete'),
-                                    duration: const Duration(seconds: 2),
-                                  ),
-                                );
-                              } catch (e) {
-                                if (!mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error updating task: $e')),
-                                );
-                              }
-                            },
                           ),
                         );
                       },
