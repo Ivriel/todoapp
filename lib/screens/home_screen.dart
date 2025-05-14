@@ -4,7 +4,6 @@ import '../services/supabase_service.dart';
 import 'login_screen.dart';
 import 'add_task_screen.dart';
 import '../models/task_model.dart';
-import '../services/notification_service.dart';
 import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
@@ -146,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-            padding: const EdgeInsets.all(13),
+            padding: const EdgeInsets.symmetric(horizontal: 13,vertical: 13),
             decoration: BoxDecoration(
               color: const Color(0xFF3A135E),
               borderRadius: BorderRadius.circular(12),
@@ -236,11 +235,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 300,
                         mainAxisSpacing: 16,
-                        childAspectRatio: 0.7,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.58,
                       ),
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
@@ -290,11 +289,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ).then((_) => fetchTasks());
                                       },
-                                      child: CircleAvatar(
+                                      child: const CircleAvatar(
                                         radius: 16,
-                                        backgroundColor:
-                                            const Color(0xFFF0E6FF),
-                                        child: const Icon(
+                                        backgroundColor: Color(0xFFF0E6FF),
+                                        child: Icon(
                                           Icons.edit,
                                           size: 18,
                                           color: Color(0xFFA252ED),
@@ -309,7 +307,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             await showDialog<bool>(
                                           context: context,
                                           builder: (_) => AlertDialog(
-                                            title: const Text('Hapus tugas?'),
+                                            title: const Text('Delete task?'),
+                                            content: const Text(
+                                                'Are you sure to delete task?'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(
@@ -319,7 +319,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               TextButton(
                                                 onPressed: () => Navigator.pop(
                                                     context, true),
-                                                child: const Text('Hapus'),
+                                                child: const Text(
+                                                  'Hapus',
+                                                  style: TextStyle(
+                                                    color: Colors.red
+                                                  ),
+                                                  ),
                                               ),
                                             ],
                                           ),
@@ -329,11 +334,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           fetchTasks();
                                         }
                                       },
-                                      child: CircleAvatar(
+                                      child: const CircleAvatar(
                                         radius: 16,
-                                        backgroundColor:
-                                            const Color(0xFFFFECEC),
-                                        child: const Icon(
+                                        backgroundColor: Color(0xFFFFECEC),
+                                        child: Icon(
                                           Icons.delete,
                                           size: 18,
                                           color: Colors.red,
@@ -414,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Container(
                                   alignment: Alignment.center,
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
+                                     horizontal: 8, vertical: 10),
                                   decoration: BoxDecoration(
                                     color:
                                         task.deadline.isBefore(DateTime.now())
@@ -426,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     DateFormat('EEEE, d MMM yyyy')
                                         .format(task.deadline),
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 8,
                                       color:
                                           task.deadline.isBefore(DateTime.now())
                                               ? Colors.red
