@@ -16,6 +16,6 @@ Aplikasi DoManage ini dibuat sebagai pengingat tugas dimana user bisa menambahka
 - Hari/tanggal/jam: Dilengkapi dengan informasi hari dan tanggal terkini dan disertai dengan jam yang tersusun dengan format jam:menit:detik secara real time
 - Informasi tugas (3): User bisa melihat jumlah tugas yang dibuat. Termasuk yang sudah diselesaikan dan yang belum diselesaikan.
 
-### Nama Anggota Kelompok
+## Nama Anggota Kelompok
 - Ivriel Dei Gratia Gunawan (XI RPL A / 14)
 - Raffy Reshaina Pasha (XI RPL A / 29)
