@@ -6,6 +6,7 @@ class Task {
   final String description;
   final DateTime deadline;
   final bool isCompleted;
+  final int notificationMinutes;
 
   Task({
     required this.id,
@@ -14,6 +15,7 @@ class Task {
     required this.description,
     required this.deadline,
     required this.isCompleted,
+    this.notificationMinutes = 15
   });
 
   factory Task.fromMap(Map<String, dynamic> map) {
@@ -24,6 +26,7 @@ class Task {
       description: map['description'],
       deadline: DateTime.parse(map['deadline']),
       isCompleted: map['is_completed'] ?? false,
+      notificationMinutes: map['notification_minutes'] ?? 15
     );
   }
 }

@@ -46,7 +46,7 @@ class SupabaseService {
 
   // Add Task - Now returns the task ID
   Future<int> addTask(
-      String title, String description, DateTime deadline) async {
+      String title, String description, DateTime deadline, int notificationMinutes) async {
     try {
       final userId = supabase.auth.currentUser!.id;
       final response = await supabase
@@ -57,6 +57,7 @@ class SupabaseService {
             'description': description,
             'deadline': deadline.toIso8601String(),
             'is_completed': false,
+            'notification_minutes': notificationMinutes, // Add this field
           })
           .select()
           .single();
@@ -115,13 +116,14 @@ Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
 
   // Update Task
   Future<void> updateTask(int taskId, String title, String description,
-      DateTime deadline, bool isCompleted) async {
+      DateTime deadline, bool isCompleted,int notificationMinutes) async {
     try {
       await supabase.from('tasks').update({
         'title': title,
         'description': description,
         'deadline': deadline.toIso8601String(),
         'is_completed': isCompleted,
+        'notification_minutes':notificationMinutes
       }).eq('id', taskId);
     } catch (e) {
       print('Error updating task: $e');
