@@ -1,4 +1,4 @@
-<p align="center"><strong>𝐃𝐎 𝐌𝐀𝐍𝐀𝐆𝐄</strong></p>
+## DoManage
 
 
 <p align="center">
