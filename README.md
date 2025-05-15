@@ -8,8 +8,8 @@ Aplikasi DoManage ini dibuat sebagai pengingat tugas dimana user bisa menambahka
 
 ## Fitur
 - Atur deadline: User bisa mengatur tanggal dan jam deadline dari tugas
-- Notifikasi pengingat: User menerima notifikasi dengan jarak waktu 15,10, dan 5 menit sebelum waktu deadline. Diperkuat dengan notifikasi getaran yang terus-menerus.
-- Hari/tanggal/jam: Dilengkapi dengan informasi hari dan tanggal terkini dan disertai dengan jam yang tersusun dengan format jam:menit:detik
+- Notifikasi pengingat: User menerima notifikasi dengan jarak waktu sebelum deadline yang mana itu ditentukan oleh user sendiri. Diperkuat dengan notifikasi getaran yang terus-menerus.
+- Hari/tanggal/jam: Dilengkapi dengan informasi hari dan tanggal terkini dan disertai dengan jam yang tersusun dengan format jam:menit:detik secara real time
 - Informasi tugas (3): User bisa melihat jumlah tugas yang dibuat. Termasuk yang sudah diselesaikan dan yang belum diselesaikan.
 
 ### Nama Anggota Kelompok
