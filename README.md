@@ -8,7 +8,7 @@
 </p>
 
 # Tentang
-Aplikasi DoManage ini dibuat sebagai pengingat tugas dimana user bisa menambahkan, menghapus, mengubah, dan membaca semua tugas yang ada. 
+Aplikasi DoManage ini dibuat sebagai pengingat tugas dimana user bisa menambahkan, menghapus, mengubah, dan membaca tugas. Dilengkapi dengan fitur autentikasi untuk menyimpan, mengamankan serta memisahkan tugas dari setiap user yang terdaftar. Diharapkan mampu membantu setiap orang untuk dapat produktif dengan menyediakan tempat yang menarik untuk mereka meletakkan setiap tugas yang akan dilakukannya.
 
 ## Fitur
 - Atur deadline: User bisa mengatur tanggal dan jam deadline dari tugas
