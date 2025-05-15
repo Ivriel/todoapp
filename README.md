@@ -1,4 +1,5 @@
-<p align="center" style="font-size: 50px;"><strong><span style="font-size: 50px;">Do Manage</span></strong></p>
+<p align="center"><strong>𝐃𝐎 𝐌𝐀𝐍𝐀𝐆𝐄</strong></p>
+
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Ivriel/Ivriel/main/logoscreen.png" />
