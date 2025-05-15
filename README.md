@@ -1,5 +1,9 @@
 <h1 align="center">Do Manage</h1>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Ivriel/Ivriel/main/logoscreen.png" />
+</p>
+
 
 <p align="center">PROJEK TUGAS AKHIR SEMESTER 2 KELAS 11 MATA PELAJARAN PPB</p>
 
