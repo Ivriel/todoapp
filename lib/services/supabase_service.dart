@@ -5,7 +5,7 @@ import 'notification_service.dart';
 final supabase = Supabase.instance.client;
 
 class SupabaseService {
-  // Authentication: Login
+  // Buat autentikasi user berdasarkan email sama pw
   Future<AuthResponse> signIn(String email, String password) async {
     return await supabase.auth
         .signInWithPassword(email: email, password: password);
@@ -44,7 +44,7 @@ class SupabaseService {
     }
   }
 
-  // Add Task - Now returns the task ID
+  // Bikin tugas sekalikan bikin id tugasnya
   Future<int> addTask(
       String title, String description, DateTime deadline, int notificationMinutes) async {
     try {
@@ -57,7 +57,7 @@ class SupabaseService {
             'description': description,
             'deadline': deadline.toIso8601String(),
             'is_completed': false,
-            'notification_minutes': notificationMinutes, // Add this field
+            'notification_minutes': notificationMinutes, 
           })
           .select()
           .single();
@@ -69,10 +69,10 @@ class SupabaseService {
     }
   }
 
-  // Update Task Status
+  // Update status tugas udah selesai apa belum
 Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
   try {
-    // First get the current task data before updating
+    // Ambil tugas terkini sebelum diupdate
     final response = await supabase
         .from('tasks')
         .select()
@@ -81,7 +81,7 @@ Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
     
     final task = Task.fromMap(response);
 
-    // Update the status in database
+    // Update status tugas
     await supabase
         .from('tasks')
         .update({'is_completed': isCompleted})
@@ -89,16 +89,16 @@ Future<void> updateTaskStatus(int taskId, bool isCompleted) async {
 
     print('Task ${task.title} (ID: $taskId) status updated to: ${isCompleted ? 'completed' : 'incomplete'}');
 
-    // Handle notifications
+    // Handle notifikasi
     if (isCompleted) {
-      // Cancel notifications when task is marked complete
+      
       print('Cancelling notifications for completed task');
       await NotificationService().cancelTaskNotifications(taskId);
     } else {
-      // Task is being marked as incomplete
+      
       if (task.deadline.isAfter(DateTime.now())) {
         print('Rescheduling notifications for uncompleted task');
-        // Force reschedule notifications with fresh schedule
+        
         await NotificationService().scheduleNotification(
           taskId,
           task.title,

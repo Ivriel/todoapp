@@ -13,9 +13,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final SupabaseService supaService = SupabaseService();
-  bool isLogin = true; // setting nilai boolean buat login atau sign up
-  bool isHidden = true; // setting nilai awal buat hide password
-  String message = '';
+  bool isLogin = true; // setting nilai boolean gawe login atau sign up
+  bool isHidden = true; // setting nilai awal gawe hide password
+  String message = ''; // gawe kasih pesan error (kalau ada)
 
   void authenticate() async {
     try {
@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // Handle Login
         final response = await supaService.signIn(
             emailController.text, passwordController.text);
-        if (response.user != null) {
+        if (response.user != null) { // kalau berhasil login langsung ke home screen
           if (mounted) {
             Navigator.pushReplacement(
               context,
@@ -32,10 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         }
       } else { // kalau false, berarti alihkan ke sign up
-        // Handle Sign Up
+ 
         final response = await supaService.signUp(
             emailController.text, passwordController.text);
-        if (response.user != null) {
+        if (response.user != null) { // kalau pendaftaran berhasil
           if (mounted) {
             //lek iso login  tampilno iki wir
             ScaffoldMessenger.of(context).showSnackBar(
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             emailController.clear();
             passwordController.clear();
 
-            // ganti mode login lek dipitek
+            // Kalau berhasil sign up arahkan lagi ke login 
             setState(() {
               isLogin = true;
               message = '';
@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       setState(() {
-        message = e.toString();
+        message = e.toString(); // bakal ada isinya kalau error
       });
     }
   }
@@ -77,9 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 70),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Image.asset('assets/logoscreen.png',height: 220,),
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             onPressed: () {
                               setState(() {
-                                isLogin = !isLogin;
+                                isLogin = !isLogin; // ubah nilai ke false kalau pencet sign up
                                 message = '';
                                 emailController.clear();
                                 passwordController.clear();

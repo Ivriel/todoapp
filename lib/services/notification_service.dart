@@ -23,7 +23,7 @@ class NotificationService {
   Future<void> rescheduleNotificationsAfterReboot() async {
     try {
       print('Rescheduling notifications after device reboot');
-      // Ensure timezone is initialized
+      // Inisialisasi waktu lokal (device)
       tz.initializeTimeZones();
 
       final tasks = await SupabaseService().getTasks();
@@ -31,7 +31,7 @@ class NotificationService {
 
       for (var task in tasks) {
         if (!task.isCompleted && task.deadline.isAfter(DateTime.now())) {
-          // Check if deadline is still in future after reboot
+          // Buat ngecek kalau deadline masih di mas depan setelah hp di reboot
           final taskDeadline = tz.TZDateTime.from(task.deadline, tz.local);
           if (taskDeadline.isAfter(tz.TZDateTime.now(tz.local))) {
             await scheduleNotification(
@@ -45,7 +45,6 @@ class NotificationService {
       }
 
       print('Successfully rescheduled $rescheduledCount notifications');
-      // Print additional debug info
       await checkPendingNotifications();
     } catch (e) {
       print('Error rescheduling notifications: $e');
@@ -79,7 +78,7 @@ class NotificationService {
     const initializationSettings =
         InitializationSettings(android: androidSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin.initialize( // buat callback. jadi kalau user klik dialog notifnya, bisa membuka app dari situ
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
         print('Notification clicked: ${details.payload}');
@@ -99,7 +98,7 @@ class NotificationService {
   }
 
   Future<void> scheduleNotification(int id, String title, DateTime deadline,
-      {int minutesBefore = 15} // New parameter with default value
+      {int minutesBefore = 15} // Menit default
       ) async {
     try {
       tz.initializeTimeZones();
@@ -186,13 +185,12 @@ class NotificationService {
     }
   }
 
-  Future<void> cancelNotification(int baseId) async {
+  Future<void> cancelNotification(int baseId) async { // buat cancel kalau tugasnya udah selesai
     try {
       print('Cancelling notifications for base ID: $baseId');
-      // Cancel all possible notifications for this task
-      for (var i = 0; i < 5; i++) {
-        await flutterLocalNotificationsPlugin.cancel(baseId + i);
-      }
+
+      await flutterLocalNotificationsPlugin.cancel(baseId);
+
       print('Successfully cancelled notifications for base ID: $baseId');
     } catch (e) {
       print('Error cancelling notifications: ${e.toString()}');
@@ -200,19 +198,15 @@ class NotificationService {
     }
   }
 
-// Add this method after cancelNotification
+// Lek tugsa udah selesai, fungsi ini jalan buat ga munculin notif
   Future<void> cancelTaskNotifications(int taskId) async {
     try {
-      final baseId = taskId * 1000; // Use same ID generation as scheduling
+      final baseId =
+          taskId * 1000; //Pakai id generation yang sama seperti penjadwalan
       print(
           'Cancelling all notifications for task ID: $taskId (Base ID: $baseId)');
 
-      // Cancel notifications for all time intervals (15, 10, 5 minutes)
-      for (var i = 0; i < 3; i++) {
-        await flutterLocalNotificationsPlugin.cancel(baseId + i);
-      }
-
-      // Verify cancellation
+      await flutterLocalNotificationsPlugin.cancel(baseId);
       final pending = await checkPendingNotifications();
       print('Remaining notifications after cancellation: ${pending.length}');
     } catch (e) {

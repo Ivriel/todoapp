@@ -1,5 +1,5 @@
 
-class Task {
+class Task { // bikin schema kolom kolom di table task dari supabase 
   final int id;
   final String userId;
   final String title;
@@ -25,8 +25,8 @@ class Task {
       title: map['title'],
       description: map['description'],
       deadline: DateTime.parse(map['deadline']),
-      isCompleted: map['is_completed'] ?? false,
-      notificationMinutes: map['notification_minutes'] ?? 15
+      isCompleted: map['is_completed'] ?? false, // buat defaultnya disetting ke salah
+      notificationMinutes: map['notification_minutes'] ?? 15 // buat defaultnya disetting ke 15
     );
   }
 }

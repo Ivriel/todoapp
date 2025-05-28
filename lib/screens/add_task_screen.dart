@@ -2,53 +2,52 @@ import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
 import '../services/notification_service.dart';
 import '../models/task_model.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // library supaya gampang memformat tanggalnya
 
 class AddTaskScreen extends StatefulWidget {
-  final Task? task;
-  const AddTaskScreen({Key? key, this.task}) : super(key: key);
+  final Task? task; // inisialisasi detect. file ini buat edit atau bikin
+  const AddTaskScreen({Key? key, this.task}) : super(key: key); // menentukan file ini buat edit apa create
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  final _notificationTimeController =
-      TextEditingController(text: '15'); // Default value buat inputnya 15 menit 
-  final _titleController = TextEditingController();
+  final _notificationTimeController = TextEditingController(text: '15'); // Default value buat inputnya 15 menit 
+  final _titleController = TextEditingController(); // buat ngambil nilai dari input
   final _descriptionController = TextEditingController();
-  final _supaService = SupabaseService();
-  DateTime _selectedDate = DateTime.now();
+  final _supaService = SupabaseService(); // intinya ngambil logika logika yang udah dibuat 
+  DateTime _selectedDate = DateTime.now(); // simpan waktu yang di select dari widget
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   @override
-  void initState() {
+  void initState() { // buat dipanggil waktu widget dimuat
     super.initState();
-    if (widget.task != null) {
+    if (widget.task != null) { // kalau task nya tidak null , berarti dia edit. jadi pre-load isi form dari data yang akan diedit
       _titleController.text = widget.task!.title;
       _descriptionController.text = widget.task!.description;
       _selectedDate = widget.task!.deadline;
       _selectedTime = TimeOfDay.fromDateTime(widget.task!.deadline);
-      _notificationTimeController.text = widget.task!.notificationMinutes.toString(); // Add this line
+      _notificationTimeController.text = widget.task!.notificationMinutes.toString(); 
     }
   }
 
   @override
-  void dispose() {
+  void dispose() { // buat hapus memori pas widget ga dipakai supaya ga terjadi memory leak
     _titleController.dispose();
     _descriptionController.dispose();
-    _notificationTimeController.dispose(); // Add this line
+    _notificationTimeController.dispose(); 
     super.dispose();
   }
 
-  Future<void> _selectDate() async {
+  Future<void> _selectDate() async { // buat munculin date picker buat user milih waktu nanti di widget
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
-    if (picked != null) {
+    if (picked != null) { // update state kalau waktu dipilih
       setState(() {
         _selectedDate = picked;
       });
@@ -68,7 +67,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   void _saveTask() async {
-    // Validate title
+    // Validasi judul biar gabisa dikirim kalau kosong
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.red,
@@ -82,9 +81,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     // Validasi waktu notif ben ga ngawur ngisine
     int minutesBefore;
     try {
-      minutesBefore = int.parse(_notificationTimeController.text);
+      minutesBefore = int.parse(_notificationTimeController.text); // tangkap input pengguna (berapa menit sebelum deadline)
       if (minutesBefore <= 0 || minutesBefore > 1440) {
-        // 1440 setara sama 24 jam. 
+        // 1440 setara dengan 24 jam. 
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.red,
           content: Text(
@@ -105,7 +104,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       return;
     }
 
-    final deadline = DateTime(
+    final deadline = DateTime( // format tanggal + jam
       _selectedDate.year,
       _selectedDate.month,
       _selectedDate.day,
@@ -113,7 +112,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       _selectedTime.minute,
     );
 
-    if (deadline.isBefore(DateTime.now())) {
+    if (deadline.isBefore(DateTime.now())) { // validasi jaga-jaga kalau user input deadline di masa lalu atau di waktu user membuat tugas (jam nya). jadi harus di masa depan
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -127,23 +126,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     try {
-      if (widget.task == null) {
+      if (widget.task == null) { // kalau null berarti tambah tugas lalu simpen tugas baru sekalian notifikasinya
         // Bikin task include id nya sekalian
         final taskId = await _supaService.addTask(_titleController.text,
             _descriptionController.text, deadline, minutesBefore);
 
-        // Schedule notifications with custom time
+        // Jadwalkan notifikasi ambil dari input yang dimasukkan pengguna
         await NotificationService().scheduleNotification(
           taskId,
           _titleController.text,
           deadline,
-          minutesBefore: minutesBefore, // Add custom notification time
+          minutesBefore: minutesBefore, 
         );
-      } else {
-        // Cancel existing notifications before updating
+      } else { // kalauga null berarti lagi edit tugas
+        // Batalin notif lama waktu sebelum tugas diedit
         await NotificationService().cancelNotification(widget.task!.id);
 
-        // Update existing task
+        // Update tugas
         await _supaService.updateTask(
             widget.task!.id,
             _titleController.text,
@@ -152,12 +151,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             widget.task!.isCompleted,
             minutesBefore);
 
-        // Schedule new notifications with custom time
+        // Jadwalin ulang notifikasi baru pakai waktu dari inputan user
         await NotificationService().scheduleNotification(
           widget.task!.id,
           _titleController.text,
           deadline,
-          minutesBefore: minutesBefore, // Add custom notification time
+          minutesBefore: minutesBefore, 
         );
       }
 
